@@ -1,0 +1,7 @@
+---
+- name: Install dependencies.
+  package:
+    name:
+      - curl
+      - unzip
+      - sendmail

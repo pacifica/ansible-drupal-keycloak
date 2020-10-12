@@ -1,2 +1,15 @@
 ---
-# defaults file for pacifica.drupal_keycloak
+drupal_deploy_dir: /var/www/drupal
+drupal_core_owner_become: yes
+drupal_core_owner: root
+
+keycloak_base_url: https://localhost:8443/auth
+keycloak_auth_realm: master
+keycloak_auth_username: admin
+keycloak_auth_password: admin
+keycloak_client_id: drupal-keycloak
+keycloak_client_secret: ""
+keycloak_description: This client is used with Drupal's Keycloak module.
+keycloak_redirect_uris:
+  - https://localhost/*
+  - http://localhost/*

@@ -1,0 +1,9 @@
+---
+- name: Define drush_path if it's not already defined.
+  set_fact:
+    drush_path: drush
+  when: drush_path is not defined
+- name: Create Secret if not present
+  set_fact:
+    keycloak_client_secret: "{{ inventory_hostname | to_uuid }}"
+  when: not keycloak_client_secret
