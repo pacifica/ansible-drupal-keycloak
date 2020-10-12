@@ -1,0 +1,90 @@
+---
+- name: Become Block
+  become: "{{ drupal_core_owner_become }}"
+  become_user: "{{ drupal_core_owner }}"
+  block:
+    - name: Set Config Fact
+      set_fact:
+        drupal_keycloak_config: openid_connect.settings.keycloak
+    - name: Get current keycloak config
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cget {{ drupal_keycloak_config }}"
+      args:
+        chdir: "{{ drupal_deploy_dir }}"
+      register: drupal_keycloak_yaml
+      failed_when: "drupal_keycloak_yaml.stdout is undefined"
+      changed_when: false
+    - name: Set Config Object Fact
+      set_fact:
+        current_keycloak_config: "{{ drupal_keycloak_yaml.stdout | from_yaml }}"
+    - name: Set Keycloak Enabled
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_keycloak_config }} enabled keycloak"
+      args:
+        chdir: "{{ drupal_deploy_dir }}"
+      when: "current_keycloak_config.enabled != 'keycloak'"
+    - name: Set Client ID
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_keycloak_config }} settings.client_id {{ keycloak_client_id }}"
+      args:
+        chdir: "{{ drupal_deploy_dir }}"
+      when: "current_keycloak_config.settings.client_id != keycloak_client_id"
+    - name: Set Client Secret
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_keycloak_config }} settings.client_secret {{ keycloak_client_secret }}"
+      args:
+        chdir: "{{ drupal_deploy_dir }}"
+      when: "current_keycloak_config.settings.client_secret != keycloak_client_secret"
+    - name: Set Keycloak Base URL
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_keycloak_config }} settings.keycloak_base {{ keycloak_base_url }}"
+      args:
+        chdir: "{{ drupal_deploy_dir }}"
+      when: "current_keycloak_config.settings.keycloak_base != keycloak_base_url"
+    - name: Set Keycloak Realm
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_keycloak_config }} settings.keycloak_realm {{ keycloak_auth_realm }}"
+      args:
+        chdir: "{{ drupal_deploy_dir }}"
+      when: "current_keycloak_config.settings.keycloak_realm != keycloak_auth_realm"
+    - name: Set Keycloak Realm
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_keycloak_config }} settings.keycloak_realm {{ keycloak_auth_realm }}"
+      args:
+        chdir: "{{ drupal_deploy_dir }}"
+      when: "current_keycloak_config.settings.keycloak_realm != keycloak_auth_realm"
+    - name: Set Auth Endpoint Fact
+      set_fact:
+        keycloak_auth_endpoint: "{{ keycloak_base_url }}/realms/{{ keycloak_auth_realm }}/protocol/openid-connect/auth"
+    - name: Set Auth Endpoint Config
+      command:
+        argv:
+          - "{{ drush_path }}"
+          - "--root={{ drupal_deploy_dir }}"
+          - cset
+          - "{{ drupal_keycloak_config }}"
+          - settings.authorization_endpoint_kc
+          - "{{ keycloak_auth_endpoint }}"
+        chdir: "{{ drupal_deploy_dir }}"
+      when: "current_keycloak_config.settings.authorization_endpoint_kc != keycloak_auth_endpoint"
+    - name: Set Token Endpoint Fact
+      set_fact:
+        keycloak_token_endpoint: "{{ keycloak_base_url }}/realms/{{ keycloak_auth_realm }}/protocol/openid-connect/token"
+    - name: Set Token Endpoint Config
+      command:
+        argv:
+          - "{{ drush_path }}"
+          - "--root={{ drupal_deploy_dir }}"
+          - cset
+          - "{{ drupal_keycloak_config }}"
+          - settings.token_endpoint_kc
+          - "{{ keycloak_token_endpoint }}"
+        chdir: "{{ drupal_deploy_dir }}"
+      when: "current_keycloak_config.settings.token_endpoint_kc != keycloak_token_endpoint"
+    - name: Set User Info Endpoint Fact
+      set_fact:
+        keycloak_userinfo_endpoint: "{{ keycloak_base_url }}/realms/{{ keycloak_auth_realm }}/protocol/openid-connect/userinfo"
+    - name: Set User Info Endpoint Config
+      command:
+        argv:
+          - "{{ drush_path }}"
+          - "--root={{ drupal_deploy_dir }}"
+          - cset
+          - "{{ drupal_keycloak_config }}"
+          - settings.userinfo_endpoint_kc
+          - "{{ keycloak_userinfo_endpoint }}"
+        chdir: "{{ drupal_deploy_dir }}"
+      when: "current_keycloak_config.settings.userinfo_endpoint_kc != keycloak_userinfo_endpoint"

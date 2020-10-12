@@ -1,2 +1,6 @@
 ---
-# tasks file for pacifica.drupal_keycloak
+- include_tasks: vars.yml
+- include_tasks: verify-state.yml
+- include_tasks: enable-keycloak.yml
+- include_tasks: create-client.yml
+- include_tasks: config-keycloak.yml

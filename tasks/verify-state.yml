@@ -1,0 +1,23 @@
+---
+- name: Check for Working Drupal Site
+  command: "{{ drush_path }} --root={{ drupal_deploy_dir }} status bootstrap"
+  args:
+    chdir: "{{ drupal_deploy_dir }}"
+  register: drupal_site_installed
+  failed_when: "drupal_site_installed.stdout is undefined"
+  changed_when: false
+  become: "{{ drupal_core_owner_become }}"
+  become_user: "{{ drupal_core_owner }}"
+- name: Verify Keycloak Url
+  uri:
+    url: "{{ keycloak_base_url }}"
+  register: keycloak_verify_result
+  failed_when: "keycloak_verify_result.status is undefined or keycloak_verify_result.status != 200"
+- name: Slurp composer.json
+  slurp:
+    src: "{{ drupal_deploy_dir }}/composer.json"
+  register: composer_json_result
+- name: Verify keycloak is in composer.json
+  assert:
+    that:
+      - "'drupal/keycloak' in (composer_json_result.content | b64decode | from_json).require.keys()"

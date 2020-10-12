@@ -1,6 +1,8 @@
 ---
 - name: Converge
   hosts: all
+  environment:
+    PATH: /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
   tasks:
     - name: "Include pacifica.drupal_keycloak"
       include_role:

@@ -1,0 +1,24 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  environment:
+    COMPOSER_MEMORY_LIMIT: '-1'
+  vars_files:
+    - test-vars.yml
+  pre_tasks:
+    - import_tasks: test-setup.yml
+  roles:
+    - role: pacifica.ansible_certinfra
+    - role: pacifica.ansible_keycloak
+    - role: geerlingguy.repo-remi
+    - role: geerlingguy.apache
+    - role: geerlingguy.apache-php-fpm
+    - role: geerlingguy.mysql
+    - role: geerlingguy.php-versions
+    - role: geerlingguy.php
+    - role: geerlingguy.php-mysql
+    - role: geerlingguy.git
+    - role: geerlingguy.composer
+    - role: geerlingguy.drush
+    - role: geerlingguy.drupal
