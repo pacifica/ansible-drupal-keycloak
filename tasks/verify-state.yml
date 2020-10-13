@@ -13,11 +13,11 @@
     url: "{{ keycloak_base_url }}"
   register: keycloak_verify_result
   failed_when: "keycloak_verify_result.status is undefined or keycloak_verify_result.status != 200"
-- name: Slurp composer.json
+- name: Slurp composer.lock
   slurp:
-    src: "{{ drupal_deploy_dir }}/composer.json"
-  register: composer_json_result
-- name: Verify keycloak is in composer.json
+    src: "{{ drupal_deploy_dir }}/composer.lock"
+  register: composer_lock_result
+- name: Verify keycloak is in composer.lock
   assert:
     that:
-      - "'drupal/keycloak' in (composer_json_result.content | b64decode | from_json).require.keys()"
+      - "'drupal/keycloak' in ((composer_lock_result.content | b64decode | from_json).packages | map(attribute='name') | list)"
