@@ -20,5 +20,7 @@
     - role: geerlingguy.php-mysql
     - role: geerlingguy.git
     - role: geerlingguy.composer
+      vars:
+        composer_version: '1.10.16'
     - role: geerlingguy.drush
     - role: geerlingguy.drupal
