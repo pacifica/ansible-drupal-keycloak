@@ -9,5 +9,15 @@
     secret: "{{ keycloak_client_secret }}"
     description: "{{ keycloak_description }}"
     redirect_uris: "{{ keycloak_redirect_uris }}"
+    protocol_mappers:
+      - name: "{{ keycloak_client_id }}"
+        protocol: openid-connect
+        protocolMapper: oidc-audience-mapper
+        consentRequired: False
+        config:
+          included.client.audience: "{{ keycloak_client_id }}"
+          id.token.claim: true
+          access.token.claim: true
+          included.custom.audience: "{{ keycloak_client_id }}"
     state: present
   register: keycloak_client_info
