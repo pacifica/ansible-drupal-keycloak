@@ -3,6 +3,8 @@
   hosts: all
   environment:
     PATH: /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
+  collections:
+    - community.general
   tasks:
     - name: "Include pacifica.drupal_keycloak"
       include_role:

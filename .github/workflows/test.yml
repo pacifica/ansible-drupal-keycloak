@@ -1,0 +1,13 @@
+---
+name: Molecule Test
+on: [push, pull_request]
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: pacifica.drupal_keycloak
+      - uses: gofrolist/molecule-action@v2
+        with:
+          molecule_working_dir: pacifica.drupal_keycloak
