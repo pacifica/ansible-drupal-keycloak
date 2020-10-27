@@ -1,6 +1,6 @@
 ---
 - name: Create a Keycloak Client for Drupal
-  community.general.keycloak_client:
+  keycloak_client:
     auth_keycloak_url: "{{ keycloak_base_url }}"
     auth_realm: "{{ keycloak_auth_realm }}"
     auth_username: "{{ keycloak_auth_username }}"
