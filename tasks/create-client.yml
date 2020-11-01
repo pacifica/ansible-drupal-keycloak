@@ -20,3 +20,4 @@
           included.custom.audience: "{{ keycloak_client_id }}"
     state: present
   register: keycloak_client_info
+  changed_when: no
