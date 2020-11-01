@@ -13,7 +13,6 @@
       - name: "{{ keycloak_client_id }}"
         protocol: openid-connect
         protocolMapper: oidc-audience-mapper
-        consentRequired: False
         config:
           included.client.audience: "{{ keycloak_client_id }}"
           id.token.claim: true
