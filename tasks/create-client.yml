@@ -6,6 +6,14 @@
     auth_username: "{{ keycloak_auth_username }}"
     auth_password: "{{ keycloak_auth_password }}"
     client_id: "{{ keycloak_client_id }}"
+    state: present
+- name: Set the Protocol Mappers for the client
+  keycloak_client:
+    auth_keycloak_url: "{{ keycloak_base_url }}"
+    auth_realm: "{{ keycloak_auth_realm }}"
+    auth_username: "{{ keycloak_auth_username }}"
+    auth_password: "{{ keycloak_auth_password }}"
+    client_id: "{{ keycloak_client_id }}"
     secret: "{{ keycloak_client_secret }}"
     description: "{{ keycloak_description }}"
     redirect_uris: "{{ keycloak_redirect_uris }}"
@@ -19,5 +27,3 @@
           access.token.claim: true
           included.custom.audience: "{{ keycloak_client_id }}"
     state: present
-  register: keycloak_client_info
-  changed_when: no
