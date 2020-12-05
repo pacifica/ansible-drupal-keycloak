@@ -8,10 +8,10 @@
   changed_when: false
   become: "{{ drupal_core_owner_become }}"
   become_user: "{{ drupal_core_owner }}"
-- name: Enable Keycloak (if not already)
-  command: "{{ drush_path }} --root={{ drupal_deploy_dir }} pm:enable keycloak"
+- name: Enable OpenID Connect (if not already)
+  command: "{{ drush_path }} --root={{ drupal_deploy_dir }} pm:enable openid_connect"
   args:
     chdir: "{{ drupal_deploy_dir }}"
-  when: "'keycloak' not in (drupal_site_installed.stdout | from_yaml).module.keys()"
+  when: "'openid_connect' not in (drupal_site_installed.stdout | from_yaml).module.keys()"
   become: "{{ drupal_core_owner_become }}"
   become_user: "{{ drupal_core_owner }}"
