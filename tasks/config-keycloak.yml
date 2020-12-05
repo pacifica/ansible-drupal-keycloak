@@ -17,10 +17,10 @@
       set_fact:
         current_generic_config: "{{ drupal_generic_yaml.stdout | from_yaml }}"
     - name: Set generic openid Enabled
-      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_generic_config }} enabled generic"
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_generic_config }} enabled true"
       args:
         chdir: "{{ drupal_deploy_dir }}"
-      when: "current_generic_config.enabled != 'generic'"
+      when: "not current_generic_config.enabled"
     - name: Set Client ID
       command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_generic_config }} settings.client_id {{ keycloak_client_id }}"
       args:
