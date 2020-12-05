@@ -7,6 +7,9 @@ keycloak_base_url: https://localhost:8443/auth
 keycloak_auth_realm: master
 keycloak_auth_username: admin
 keycloak_auth_password: admin
+keycloak_auth_url: "{{ keycloak_base_url }}/realms/{{ keycloak_auth_realm }}/protocol/openid-connect/auth"
+keycloak_token_url: "{{ keycloak_base_url }}/realms/{{ keycloak_auth_realm }}/protocol/openid-connect/token"
+keycloak_userinfo_url: "{{ keycloak_base_url }}/realms/{{ keycloak_auth_realm }}/protocol/openid-connect/userinfo"
 keycloak_client_id: drupal-keycloak
 keycloak_client_secret: ""
 keycloak_description: This client is used with Drupal's Keycloak module.

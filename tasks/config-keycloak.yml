@@ -5,86 +5,44 @@
   block:
     - name: Set Config Fact
       set_fact:
-        drupal_keycloak_config: openid_connect.settings.keycloak
-    - name: Get current keycloak config
-      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cget {{ drupal_keycloak_config }}"
+        drupal_generic_config: openid_connect.settings.generic
+    - name: Get current generic openid config
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cget {{ drupal_generic_config }}"
       args:
         chdir: "{{ drupal_deploy_dir }}"
-      register: drupal_keycloak_yaml
-      failed_when: "drupal_keycloak_yaml.stdout is undefined"
+      register: drupal_generic_yaml
+      failed_when: "drupal_generic_yaml.stdout is undefined"
       changed_when: false
     - name: Set Config Object Fact
       set_fact:
-        current_keycloak_config: "{{ drupal_keycloak_yaml.stdout | from_yaml }}"
-    - name: Set Keycloak Enabled
-      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_keycloak_config }} enabled keycloak"
+        current_generic_config: "{{ drupal_generic_yaml.stdout | from_yaml }}"
+    - name: Set generic openid Enabled
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_generic_config }} enabled true"
       args:
         chdir: "{{ drupal_deploy_dir }}"
-      when: "current_keycloak_config.enabled != 'keycloak'"
+      when: "not current_generic_config.enabled"
     - name: Set Client ID
-      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_keycloak_config }} settings.client_id {{ keycloak_client_id }}"
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_generic_config }} settings.client_id {{ keycloak_client_id }}"
       args:
         chdir: "{{ drupal_deploy_dir }}"
-      when: "current_keycloak_config.settings.client_id != keycloak_client_id"
+      when: "current_generic_config.settings.client_id != keycloak_client_id"
     - name: Set Client Secret
-      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_keycloak_config }} settings.client_secret {{ keycloak_client_secret }}"
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_generic_config }} settings.client_secret {{ keycloak_client_secret }}"
       args:
         chdir: "{{ drupal_deploy_dir }}"
-      when: "current_keycloak_config.settings.client_secret != keycloak_client_secret"
-    - name: Set Keycloak Base URL
-      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_keycloak_config }} settings.keycloak_base {{ keycloak_base_url }}"
+      when: "current_generic_config.settings.client_secret != keycloak_client_secret"
+    - name: Set Keycloak Authorization URL
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_generic_config }} settings.authorization_endpoint {{ keycloak_auth_url }}"
       args:
         chdir: "{{ drupal_deploy_dir }}"
-      when: "current_keycloak_config.settings.keycloak_base != keycloak_base_url"
-    - name: Set Keycloak Realm
-      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_keycloak_config }} settings.keycloak_realm {{ keycloak_auth_realm }}"
+      when: "current_generic_config.settings.authorization_endpoint != keycloak_auth_url"
+    - name: Set Keycloak Token URL
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_generic_config }} settings.token_endpoint {{ keycloak_token_url }}"
       args:
         chdir: "{{ drupal_deploy_dir }}"
-      when: "current_keycloak_config.settings.keycloak_realm != keycloak_auth_realm"
-    - name: Set Keycloak Realm
-      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_keycloak_config }} settings.keycloak_realm {{ keycloak_auth_realm }}"
+      when: "current_generic_config.settings.token_endpoint != keycloak_token_url"
+    - name: Set Keycloak UserInfo URL
+      command: "{{ drush_path }} --root={{ drupal_deploy_dir }} cset {{ drupal_generic_config }} settings.userinfo_endpoint {{ keycloak_userinfo_url }}"
       args:
         chdir: "{{ drupal_deploy_dir }}"
-      when: "current_keycloak_config.settings.keycloak_realm != keycloak_auth_realm"
-    - name: Set Auth Endpoint Fact
-      set_fact:
-        keycloak_auth_endpoint: "{{ keycloak_base_url }}/realms/{{ keycloak_auth_realm }}/protocol/openid-connect/auth"
-    - name: Set Auth Endpoint Config
-      command:
-        argv:
-          - "{{ drush_path }}"
-          - "--root={{ drupal_deploy_dir }}"
-          - cset
-          - "{{ drupal_keycloak_config }}"
-          - settings.authorization_endpoint_kc
-          - "{{ keycloak_auth_endpoint }}"
-        chdir: "{{ drupal_deploy_dir }}"
-      when: "current_keycloak_config.settings.authorization_endpoint_kc != keycloak_auth_endpoint"
-    - name: Set Token Endpoint Fact
-      set_fact:
-        keycloak_token_endpoint: "{{ keycloak_base_url }}/realms/{{ keycloak_auth_realm }}/protocol/openid-connect/token"
-    - name: Set Token Endpoint Config
-      command:
-        argv:
-          - "{{ drush_path }}"
-          - "--root={{ drupal_deploy_dir }}"
-          - cset
-          - "{{ drupal_keycloak_config }}"
-          - settings.token_endpoint_kc
-          - "{{ keycloak_token_endpoint }}"
-        chdir: "{{ drupal_deploy_dir }}"
-      when: "current_keycloak_config.settings.token_endpoint_kc != keycloak_token_endpoint"
-    - name: Set User Info Endpoint Fact
-      set_fact:
-        keycloak_userinfo_endpoint: "{{ keycloak_base_url }}/realms/{{ keycloak_auth_realm }}/protocol/openid-connect/userinfo"
-    - name: Set User Info Endpoint Config
-      command:
-        argv:
-          - "{{ drush_path }}"
-          - "--root={{ drupal_deploy_dir }}"
-          - cset
-          - "{{ drupal_keycloak_config }}"
-          - settings.userinfo_endpoint_kc
-          - "{{ keycloak_userinfo_endpoint }}"
-        chdir: "{{ drupal_deploy_dir }}"
-      when: "current_keycloak_config.settings.userinfo_endpoint_kc != keycloak_userinfo_endpoint"
+      when: "current_generic_config.settings.userinfo_endpoint != keycloak_userinfo_url"

@@ -17,7 +17,7 @@
   slurp:
     src: "{{ drupal_deploy_dir }}/composer.lock"
   register: composer_lock_result
-- name: Verify keycloak is in composer.lock
+- name: Verify OpenID Connect is in composer.lock
   assert:
     that:
-      - "'drupal/keycloak' in ((composer_lock_result.content | b64decode | from_json).packages | map(attribute='name') | list)"
+      - "'drupal/openid_connect' in ((composer_lock_result.content | b64decode | from_json).packages | map(attribute='name') | list)"
